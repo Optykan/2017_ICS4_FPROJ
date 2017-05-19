@@ -1,5 +1,5 @@
 public interface Draggable{
-	public void onDragStart(int x, int y);
-	public void onDragEnd(int x, int y);
+	public void startDrag();
+	public void stopDrag();
 	public void updatePosition(int x, int y);
 }

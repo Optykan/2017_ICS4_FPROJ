@@ -49,9 +49,21 @@ public class Card extends Shape implements Drawable {
         return size;
     }
 
+    public boolean isFaceUp(){
+        return isFaceUp;
+    }
+
+    public void setFaceUp(boolean b){
+        isFaceUp = b;
+    }
+
+    public int getFontHeight(){
+        return (int)(0.2D*getHeight());
+    }
+
 
     public void draw(Graphics g)  {
-        Font localFont = new Font("SanSerif", 0, (int)Math.round(0.2D * getHeight()));
+        Font localFont = new Font("SanSerif", 0, (int)Math.round(0.75D * getHeight()));
 
         SuitClass localObject;
 

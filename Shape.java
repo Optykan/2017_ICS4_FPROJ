@@ -51,5 +51,9 @@ public abstract class Shape {
 		setColor (Color.white);
 		draw (g);
 		setColor (cOldColor);
-	}       
+	}      
+
+	public abstract void draw(Graphics g); 
+
+
 }

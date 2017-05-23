@@ -1,6 +1,6 @@
 import java.awt.*;
 
-class Club extends SuitClass implements Drawable{
+class Club extends Suit implements Drawable{
     public Club (){
         super();
         setColor(Color.black);

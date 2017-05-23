@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.Vector;
 
 public class DraggablePile extends Pile implements Drawable, Draggable{
 	private boolean isDragging = false;
@@ -11,25 +12,39 @@ public class DraggablePile extends Pile implements Drawable, Draggable{
 		super(vector);
 	}
 	public boolean contentsAreValid(){
-		static final char[] CONTIGUOUS = {'K','Q','J','T','9','8','7','6','5','4','3','2','A'};
+		final char[] CONTIGUOUS = {'A','2','3','4','5','6','7','8','9','T','J','Q','K'};
 		int i = getSize();
-		int continuity = 0;
+		int continuity = -1;
+
+		Card temp = get(0);
+
+		for(int j=0; j<CONTIGUOUS.length; j++){
+			if(temp.getFaceValue() == CONTIGUOUS[i]){
+				continuity = i;
+				break;
+			}
+		}
+		if(continuity == -1){
+			return false;
+		}
+
 		while(i-->0){
 			Card c = get(i);
-			if(!c.isFaceUp() && continuity == 0){
+			if(!((Card)c).isFaceUp()){
 				return false;
-			}else if(!c.isFaceUp() && continuity > 0){
-				return true;
 			}else if(c.getFaceValue()==CONTIGUOUS[continuity]){
-				continuity++:
+				continuity++;
 			}else{
 				return false;
 			}
 		}
-		//do i need a return statment out here?
+		return true;
 	}
 	public void draw(Graphics g){
-
+		int i = getSize();
+		while(i-->0){
+			get(i).draw(g);
+		}
 	}
 	public void startDrag(){
 		isDragging = true;

@@ -63,38 +63,43 @@ public class Card extends Shape implements Drawable {
 
 
 	public void draw(Graphics g)  {
-		Font localFont = new Font("SanSerif", Font.PLAIN, (int)Math.round(0.75D * getHeight()*0.2));
+		if(!isFaceUp()){
+			java.awt.Point localPoint = getCentre();
+			g.setColor(Color.BLUE);
+			g.fillRect((int)(localPoint.getX() - getWidth() / 2), (int)(localPoint.getY() - getHeight() / 2), getWidth(), getHeight());
+			g.setColor(Color.BLACK);
+			g.drawRect((int)(localPoint.getX() - getWidth() / 2), (int)(localPoint.getY() - getHeight() / 2), getWidth(), getHeight());
+		}else{
 
-		Suit localObject;
+			Font localFont = new Font("SanSerif", Font.PLAIN, (int)Math.round(0.75D * getHeight()*0.2));
 
-		if (suit.equals(SuitType.DIAMOND)) {
-			localObject = new Diamond();
-		} else if (suit.equals(SuitType.CLUB)) {
-			localObject = new Club();
-		} else if (suit.equals(SuitType.HEART)) {
-			localObject = new Heart();
-		} else {
-			localObject = new Spade();
+			Suit localObject;
+
+			if (suit.equals(SuitType.DIAMOND)) {
+				localObject = new Diamond();
+			} else if (suit.equals(SuitType.CLUB)) {
+				localObject = new Club();
+			} else if (suit.equals(SuitType.HEART)) {
+				localObject = new Heart();
+			} else {
+				localObject = new Spade();
+			}
+
+			localObject.setHeight((int)(getHeight() * 0.25D));
+			localObject.setWidth((int)(getWidth() * 0.25D));
+			localObject.setCentre(getCentre());
+
+			java.awt.Point localPoint = getCentre();
+			g.setColor(Color.WHITE);
+			g.fillRect((int)(localPoint.getX() - getWidth() / 2), (int)(localPoint.getY() - getHeight() / 2), getWidth(), getHeight());
+			g.setColor(getColor());
+			g.drawRect((int)(localPoint.getX() - getWidth() / 2), (int)(localPoint.getY() - getHeight() / 2), getWidth(), getHeight());
+
+			localObject.draw(g);
+
+			g.setFont(localFont);
+			g.drawString(Character.toString(getFaceValue()), (int)(localPoint.getX() - getWidth() / 2)+5, (int)(localPoint.getY() - getHeight() / 2 + 0.2D * getHeight()));
 		}
-
-		g.setColor(getColor());
-
-		localObject.setHeight((int)(getHeight() * 0.25D));
-		localObject.setWidth((int)(getWidth() * 0.25D));
-		localObject.setCentre(getCentre());
-
-		java.awt.Point localPoint = getCentre();
-		g.drawRect((int)(localPoint.getX() - getWidth() / 2), (int)(localPoint.getY() - getHeight() / 2), getWidth(), getHeight());
-
-		g.setColor(Color.RED);
-		g.fillRect(100, 100, 100, 100);
-
-		System.out.println(getColor());
-
-		localObject.draw(g);
-
-		g.setFont(localFont);
-		g.drawString(Character.toString(getFaceValue()), (int)(localPoint.getX() - getWidth() / 2)+5, (int)(localPoint.getY() - getHeight() / 2 + 0.2D * getHeight()));
 	}
 
 	public void setHeight(int paramInt) {}

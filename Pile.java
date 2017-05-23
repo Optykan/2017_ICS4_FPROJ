@@ -157,7 +157,10 @@ public class Pile extends Shape implements Drawable{
 			Point p = getCentre();
 			g.fill3DRect((int)p.x, (int)p.y, getWidth(), getHeight(), true);
 		}else{
-			peek().draw(g);
+			int s=getSize();
+			for(int i=0; i<s; i++){
+				get(i).draw(g);
+			}
 		}
 	}
 

@@ -22,22 +22,17 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 		for(int i=0; i<4; i++){
 			for(int j=0; j<6; j++){
 				piles[i].push(distribute.pop());
-				if(j==6){
-					Card c = piles[i].pop();
-					c.setFaceUp(true);
-					piles[i].push(c);
-				}
 			}
 		}
 		for(int i=4;i<10;i++){
 			for(int j=0; j<5; j++){
 				piles[i].push(distribute.pop());
-				if(j==5){
-					Card c = piles[i].pop();
-					c.setFaceUp(true);
-					piles[i].push(c);
-				}
 			}
+		}
+		for(int i=0; i<10; i++){
+			Card c = piles[i].pop();
+			c.setFaceUp(true);
+			piles[i].push(c);
 		}
 	}
 

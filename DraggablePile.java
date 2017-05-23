@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.util.Vector;
 
-public class DraggablePile extends Pile implements Drawable, Draggable{
+public class DraggablePile extends Pile implements Draggable{
 	private boolean isDragging = false;
 
 	public DraggablePile(Pile pile){
@@ -30,7 +30,7 @@ public class DraggablePile extends Pile implements Drawable, Draggable{
 
 		while(i-->0){
 			Card c = get(i);
-			if(!((Card)c).isFaceUp()){
+			if(!c.isFaceUp()){
 				return false;
 			}else if(c.getFaceValue()==CONTIGUOUS[continuity]){
 				continuity++;
@@ -40,12 +40,7 @@ public class DraggablePile extends Pile implements Drawable, Draggable{
 		}
 		return true;
 	}
-	public void draw(Graphics g){
-		int i = getSize();
-		while(i-->0){
-			get(i).draw(g);
-		}
-	}
+
 	public void startDrag(){
 		isDragging = true;
 	}

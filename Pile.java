@@ -1,5 +1,6 @@
 import java.util.Vector;
 import java.awt.*;
+import java.util.Collections;
 
 //0 is the bottom of the vector (very last card)
 //cards are added starting from the top
@@ -108,7 +109,7 @@ public class Pile extends Shape{
 		Point p = getCentre();
 		int y = (int)p.getY();
 
-		card.setCentre((int)p.getX(), y+(card.getFontHeight()+2*FONT_BUFFER_HEIGHT)*deck.size());
+		card.setCentre((int)p.getX(), y+(card.getFontHeight()+2*FONT_BUFFER_HEIGHT)*getSize());
 		deck.add(card);
 	}
 

@@ -1,6 +1,6 @@
 import java.awt.*;
 
-public class Card extends Shape implements Drawable { 
+public class Card extends Shape { 
 	private boolean isFaceUp=false;
 	private SuitType suit = SuitType.DIAMOND;
 	private CardSizeType size = CardSizeType.LARGE;
@@ -98,7 +98,7 @@ public class Card extends Shape implements Drawable {
 			localObject.draw(g);
 
 			g.setFont(localFont);
-			g.drawString(Character.toString(getFaceValue()), (int)(localPoint.getX() - getWidth() / 2)+5, (int)(localPoint.getY() - getHeight() / 2 + 0.2D * getHeight()));
+			g.drawString(Character.toString(getFaceValue()), (int)(localPoint.getX() - getWidth() / 2)+5, (int)(localPoint.getY() - getHeight() / 2 + 0.2D*getHeight()));
 		}
 	}
 

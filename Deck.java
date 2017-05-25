@@ -1,21 +1,22 @@
 import java.util.Vector;
 import java.awt.*;
+import java.util.Collections;
 
 //0 is the bottom of the vector (very last card)
 //cards are added starting from the top
-public class Pile extends Shape{
+public class Deck extends Shape{
 	private static final int FONT_BUFFER_HEIGHT = 10;
 	Vector deck = new Vector();
 
-	public Pile(){
+	public Deck(){
 		super();
 	}
-	public Pile(Pile pile){
+	public Deck(Pile pile){
 		super();
 		deck.addAll(pile.getVector());
 	}
 
-	public Pile(Vector vector){
+	public Deck(Vector vector){
 		super();
 		deck.addAll(vector);
 	}
@@ -23,6 +24,22 @@ public class Pile extends Shape{
 	public Card peek(){
 		//unconventional, but ok
 		return (Card)deck.lastElement();
+	}
+
+	public void loadStandardDeck(){
+		final SuitType[] suits = {SuitType.DIAMOND, SuitType.CLUB, SuitType.HEART, SuitType.SPADE};
+		final char[] values = {'K','Q','J','T','9','8','7','6','5','4','3','2','A'};
+		for(int i=0; i<4; i++){
+			for(int j=0; j<13; j++){
+				Card p = new Card(values[j], suits[i]);
+				p.setFaceUp(false);
+				push(p);
+			}
+		}
+	}
+
+	public void shuffle(){
+		Collections.shuffle(deck);
 	}
 
 	public boolean isEmpty(){
@@ -105,10 +122,7 @@ public class Pile extends Shape{
 	}
 
 	public void push(Card card){
-		Point p = getCentre();
-		int y = (int)p.getY();
-
-		card.setCentre((int)p.getX(), y+(card.getFontHeight()+2*FONT_BUFFER_HEIGHT)*deck.size());
+		card.setCentre(getCentre());
 		deck.add(card);
 	}
 

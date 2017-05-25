@@ -39,7 +39,7 @@ public abstract class Shape {
 	}
 
 	public void setCentre(Point p){
-		centre = p;
+		centre.setLocation((int)p.getX(), (int)p.getY());
 	}
 
 	public Point getCentre(){
@@ -54,6 +54,4 @@ public abstract class Shape {
 	}      
 
 	public abstract void draw(Graphics g); 
-
-
 }

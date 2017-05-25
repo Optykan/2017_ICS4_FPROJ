@@ -1,6 +1,6 @@
 import java.awt.*;
 
-class Heart extends Suit implements Drawable{
+class Heart extends Suit{
     public Heart (){
         super();
         setColor(Color.red);

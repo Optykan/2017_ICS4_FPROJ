@@ -87,7 +87,11 @@ public class Deck extends Shape{
 		int cy = (int)p.getY();
 		Card test = new Card();
 
-		return x>=cx-width/2 && x<= cx+width/2 && y>=cy-(test.getHeight()/2) && y<=cy+size*(2*FONT_BUFFER_HEIGHT+test.getFontHeight())+FONT_BUFFER_HEIGHT;
+		return x>=cx-test.getWidth()/2 && x>=cx+test.getWidth()/2 && y>=cy-test.getHeight()/2 && y<=cy+test.getHeight()/2;
+	}
+
+	public Card removeCardAt(int position){
+		return (Card)deck.remove(position);
 	}
 
 }

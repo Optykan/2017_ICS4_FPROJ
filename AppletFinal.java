@@ -63,21 +63,21 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 
 	//invoked when a mouse button is pressed on a component
 	public void mousePressed(MouseEvent e){
-		System.out.println("press");
 		DraggablePile pile = resolveDraggablePile(e.getX(), e.getY());
 		if (pile != null){
+			System.out.println("pile");
 			selectedPile = pile;
 			pile.startDrag();
+			System.out.println(pile.get(0));
 		}
 	}
 
 	//invoked when the mouse is released on a component
 	public void mouseReleased(MouseEvent e){
 		if(selectedPile != null){
-			selectedPile = null;
 			selectedPile.stopDrag();
+			selectedPile = null;
 		}
-
 	}
 
 	//MouseMotionListener
@@ -113,8 +113,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 	public DraggablePile resolveDraggablePile(int x, int y){
 		for(int i=0; i<piles.length; i++){
 			if(piles[i].containsPoint(x, y)){
-				System.out.println(i);
-				return null;
+				return piles[i].resolveDraggablePile(x, y);
 			}
 		}
 		return null;

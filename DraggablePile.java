@@ -18,9 +18,11 @@ public class DraggablePile extends Pile implements Draggable{
 
 		Card temp = get(0);
 
+		SuitType suit = temp.getSuit();
+
 		for(int j=0; j<CONTIGUOUS.length; j++){
-			if(temp.getFaceValue() == CONTIGUOUS[i]){
-				continuity = i;
+			if(temp.getFaceValue() == CONTIGUOUS[j]){
+				continuity = j;
 				break;
 			}
 		}
@@ -32,7 +34,7 @@ public class DraggablePile extends Pile implements Draggable{
 			Card c = get(i);
 			if(!c.isFaceUp()){
 				return false;
-			}else if(c.getFaceValue()==CONTIGUOUS[continuity]){
+			}else if(c.getFaceValue()==CONTIGUOUS[continuity] && c.getSuit().toString().equals(suit.toString())){
 				continuity++;
 			}else{
 				return false;

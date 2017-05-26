@@ -4,30 +4,17 @@ import java.util.Collections;
 
 //0 is the bottom of the vector (very last card)
 //cards are added starting from the top
-public class Pile extends Shape{
+public class Pile extends Deck{
 	private static final int FONT_BUFFER_HEIGHT = 10;
-	Vector deck = new Vector();
-
 	public Pile(){
 		super();
 	}
 	public Pile(Pile pile){
-		super();
-		deck.addAll(pile.getVector());
+		super(pile);
 	}
 
 	public Pile(Vector vector){
-		super();
-		deck.addAll(vector);
-	}
-
-	public Card peek(){
-		//unconventional, but ok
-		return (Card)deck.lastElement();
-	}
-
-	public boolean isEmpty(){
-		return deck.isEmpty();
+		super(vector);
 	}
 
 	public boolean hasRuns(){
@@ -97,24 +84,12 @@ public class Pile extends Shape{
 		return null;
 	}
 
-	public Card get(int index){
-		return (Card)deck.elementAt(index);
-	}
-
-	public int getSize(){
-		return deck.size();
-	}
-
 	public void push(Card card){
 		Point p = getCentre();
 		int y = (int)p.getY();
 
 		card.setCentre((int)p.getX(), y+(card.getFontHeight()+2*FONT_BUFFER_HEIGHT)*getSize());
 		deck.add(card);
-	}
-
-	public Card pop(){
-		return (Card)deck.remove(deck.size()-1);
 	}
 
 	public void draw(Graphics g){
@@ -129,8 +104,52 @@ public class Pile extends Shape{
 		}
 	}
 
-	public Vector getVector(){
-		return deck;
+	public DraggablePile resolveDraggablePile(int x, int y){
+		int length = getSize();
+		Point centre = getCentre();
+		Card c = new Card();
+
+		//if we're out of x bounds then
+		if(x <= centre.getX()-c.getWidth()/2 || x >= centre.getX()+c.getWidth()/2){
+			return null;
+		}
+
+		//at the time that I'm writing this I have a good idea of what this code is doing (May 2017, 2017)
+		for(int i=0; i<length; i++){
+			c = get(i);
+			//if we are on the last card
+			if(i == length-1){
+				int topY = (int)centre.getY() + (length-1)*(2*FONT_BUFFER_HEIGHT+c.getFontHeight())-c.getHeight()/2;
+				if(y >= topY && y<=topY+c.getHeight()){
+					Pile p = new Pile();
+					p.push(removeCardAt(i));
+					return new DraggablePile(p);
+				}else{
+					return null;
+				}
+			}else{
+				int topY = (int)centre.getY()+(length-1)*(2*FONT_BUFFER_HEIGHT+c.getFontHeight())-c.getHeight()/2;
+				int bottomY = topY + 2*FONT_BUFFER_HEIGHT+c.getFontHeight();
+				if(y >= topY && y <= bottomY){
+					Pile res = new Pile();
+					for(int j=i; j<length; j++){
+						res.push(get(j));
+					}
+					DraggablePile drag = new DraggablePile(res);
+					if(!drag.contentsAreValid()){
+						return null;
+					}else{
+						for(int j=i; j<length; j++){
+							Card trash = removeCardAt(j);
+						}
+						return drag;
+					}
+				}else{
+					continue;
+				}
+			}
+		}
+		return null;
 	}
 
 	public boolean containsPoint(int x, int y){
@@ -141,7 +160,7 @@ public class Pile extends Shape{
 		int cy = (int)p.getY();
 		Card test = new Card();
 
-		return x>=cx-width/2 && x<= cx+width/2 && y>=cy-(test.getHeight()/2) && y<=cy+size*(2*FONT_BUFFER_HEIGHT+test.getFontHeight())+FONT_BUFFER_HEIGHT;
+		return x>=cx-width/2 && x<= cx+width/2 && y>=cy-(test.getHeight()/2) && y<=cy+(size-1)*(2*FONT_BUFFER_HEIGHT+test.getFontHeight())+test.getHeight()/2;
 	}
 
 }

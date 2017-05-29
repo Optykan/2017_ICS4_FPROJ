@@ -36,6 +36,10 @@ public class Deck extends Shape{
 		}
 	}
 
+	public void addAll(Pile pile){
+		addAll(pile.getVector());
+	}
+
 	public void set(int i, Card c){
 		deck.set(i,c);
 	}

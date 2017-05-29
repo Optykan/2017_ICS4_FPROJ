@@ -14,4 +14,8 @@ public class SuitType {
 	public String toString(){
 		return value;
 	}
+
+	public boolean equals(SuitType s){
+		return s.toString().equals(value);
+	}
 }

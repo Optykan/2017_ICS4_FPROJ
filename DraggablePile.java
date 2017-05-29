@@ -18,7 +18,6 @@ public class DraggablePile extends Pile implements Draggable{
 
 	public boolean contentsAreValid(){
 		final char[] CONTIGUOUS = {'A','2','3','4','5','6','7','8','9','T','J','Q','K'};
-		int i = getSize();
 		int continuity = -1;
 
 		Card temp = get(0);
@@ -31,17 +30,25 @@ public class DraggablePile extends Pile implements Draggable{
 				break;
 			}
 		}
+
+		System.out.println("Continuity starting at: "+CONTIGUOUS[continuity]+" with suit: "+suit);
 		if(continuity == -1){
 			return false;
 		}
+		// System.out.println("Passed continuity check");
 
-		while(i-->0){
+		int size = getSize();
+		for(int i=0; i<size; i++){
 			Card c = get(i);
+			System.out.println("Checking: "+c.getFaceValue()+" with suit: "+c.getSuit());
+
 			if(!c.isFaceUp()){
+				System.out.println("Face down card, exiting");
 				return false;
-			}else if(c.getFaceValue()==CONTIGUOUS[continuity] && c.getSuit().toString().equals(suit.toString())){
-				continuity++;
+			}else if(c.getFaceValue()==CONTIGUOUS[continuity] && c.getSuit().equals(suit)){
+				continuity--;
 			}else{
+				System.out.println("Something went wrong, exiting");
 				return false;
 			}
 		}

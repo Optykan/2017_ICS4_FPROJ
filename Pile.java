@@ -4,7 +4,7 @@ import java.util.Collections;
 
 //0 is the bottom of the vector (very last card)
 //cards are added starting from the top
-public class Pile extends Deck implements Cloneable{
+public class Pile extends Deck{
 	public Pile(){
 		super();
 	}
@@ -124,6 +124,7 @@ public class Pile extends Deck implements Cloneable{
 				int topY = (int)centre.getY() + (length-1)*(2*FONT_BUFFER_HEIGHT+c.getFontHeight())-c.getHeight()/2;
 				if(y >= topY && y<=topY+c.getHeight()){
 					Pile p = new Pile();
+					p.setCentre(c.getCentre());
 					p.push(removeCardAt(i));
 					return new DraggablePile(p);
 				}else{
@@ -135,21 +136,17 @@ public class Pile extends Deck implements Cloneable{
 				//if we determine that we're resolving some other card inside the deck
 				if(y >= topY && y <= bottomY){
 					Pile res = new Pile();
-					Point centre = getCentre();
 					res.setCentre((int)centre.getX(), (int)centre.getY()+i*(2*FONT_BUFFER_HEIGHT+c.getFontHeight()));
 					for(int j=i; j<length; j++){
-						//this pushes a reference
-						res.push(get(j));
+						//we use i here because if we remove a j, then the entire vector shifts by 1, resulting in an ArrayIndexOutOfBoundsException
+						res.push(removeCardAt(i));
 					}
 					DraggablePile drag = new DraggablePile(res);
 					if(!drag.contentsAreValid()){
-						System.out.println("invlaid");
+						//add the references back to the original stack
+						addAll(res);
 						return null;
 					}else{
-						System.out.println("something appened");
-						for(int j=i; j<length; j++){
-							Card trash = removeCardAt(j);
-						}
 						return drag;
 					}
 				}else{

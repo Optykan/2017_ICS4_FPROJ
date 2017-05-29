@@ -5,6 +5,7 @@ import java.awt.event.*;
 public class AppletFinal extends Applet implements ActionListener, MouseListener, MouseMotionListener{
 	Graphics g;   // declares a graphics canvas for drawing
 	DraggablePile selectedPile;
+	int origin = -1;
 	Pile[] piles = new Pile[10];
 	Deck distribute = new Deck();
 
@@ -49,41 +50,55 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 	//when the mouse clicks (press and release) a component
 	public void mouseClicked(MouseEvent e){
 	//dont want to do anything here?
+		// System.out.println("clicked");
 	}
 
 	//when the mouse enters a component
 	public void mouseEntered(MouseEvent e){
-
+		// System.out.println("entered");
 	}
 
 	//when the mouse exits a component
 	public void mouseExited(MouseEvent e){
-
+		// System.out.println("exit");
 	}
 
 	//invoked when a mouse button is pressed on a component
 	public void mousePressed(MouseEvent e){
-		DraggablePile pile = resolveDraggablePile(e.getX(), e.getY());
+		int index = resolvePile(e.getX(), e.getY());
+		System.out.println("Target: "+index);
+		DraggablePile pile = resolveDraggablePile(index, e.getX(), e.getY());
 		if (pile != null){
-			System.out.println("pile");
+			System.out.println("Resolved pile");
+			origin = index;
+			pile.dumpContents();
 			selectedPile = pile;
-			pile.startDrag();
-			System.out.println(pile.get(0));
+			selectedPile.startDrag();
 		}
+		repaint();
 	}
 
 	//invoked when the mouse is released on a component
 	public void mouseReleased(MouseEvent e){
+		for(int i=0; i<piles.length; i++){
+			piles[i].dumpContents();
+		}
 		if(selectedPile != null){
 			selectedPile.stopDrag();
-			selectedPile = null;
+
+			returnDraggableToPile(e.getX(), e.getY());
+
+			selectedPile = null;	
+			origin = -1;
 		}
+		repaint();
 	}
 
 	//MouseMotionListener
 	public void mouseDragged(MouseEvent e){
-		if(selectedPile instanceof DraggablePile){
+		if(selectedPile instanceof DraggablePile && selectedPile.isDragging()){
 			selectedPile.updatePosition(e.getX(), e.getY());
+			repaint();
 		}
 	}
 	//MouseMotionListener
@@ -103,19 +118,50 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 
 	public void paint (Graphics g){
 		// g.drawString ("Hello World", 25, 50);
-		System.out.println("draw");
+		// System.out.println("draw");
 		for(int i=0; i<10; i++){
 			piles[i].draw(g);
+		}
+		if(selectedPile != null){
+			selectedPile.draw(g);
 		}
 		distribute.draw(g);
 	}
 
+	public DraggablePile resolveDraggablePile(int index, int x, int y){
+		if(index >= 0  && index < piles.length){
+			return piles[index].resolveDraggablePile(x, y);
+		}else if (index == -1){
+			return null;
+		}
+		throw new ArrayIndexOutOfBoundsException("Invalid index: "+index);
+	}
+
 	public DraggablePile resolveDraggablePile(int x, int y){
+		int index = resolvePile(x, y);
+		return resolveDraggablePile(index, x, y);
+	}
+
+	public int resolvePile(int x, int y){
 		for(int i=0; i<piles.length; i++){
 			if(piles[i].containsPoint(x, y)){
-				return piles[i].resolveDraggablePile(x, y);
+				return i;
 			}
 		}
-		return null;
+		return -1;
+	}
+
+	public void returnDraggableToPile(int x, int y){
+		boolean returned = false;
+		for(int i=0; i<piles.length; i++){
+			if(piles[i].containsPoint(x, y)){
+				piles[i].addAll(selectedPile.getVector());
+				returned = true;
+				break;
+			}
+		}
+		if(!returned){
+			piles[origin].addAll(selectedPile.getVector());
+		}
 	}
 } 

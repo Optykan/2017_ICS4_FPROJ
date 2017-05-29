@@ -5,7 +5,7 @@ import java.util.Collections;
 //0 is the bottom of the vector (very last card)
 //cards are added starting from the top
 public class Deck extends Shape{
-	private static final int FONT_BUFFER_HEIGHT = 10;
+	protected static final int FONT_BUFFER_HEIGHT = 10;
 	Vector deck = new Vector();
 
 	public Deck(){
@@ -19,6 +19,25 @@ public class Deck extends Shape{
 	public Deck(Vector vector){
 		super();
 		deck.addAll(vector);
+	}
+
+	public void dumpContents(){
+		int size = getSize();
+		String out = "Size: "+Integer.toString(size)+" || Contents: ";
+		for(int i=0; i<size; i++){
+			out += Character.toString(get(i).getFaceValue())+" ";
+		}
+		System.out.println(out);
+	}
+
+	public void addAll(Vector vector){
+		for(int i=0; i<vector.size(); i++){
+			push((Card)vector.get(i));
+		}
+	}
+
+	public void set(int i, Card c){
+		deck.set(i,c);
 	}
 
 	public Card peek(){

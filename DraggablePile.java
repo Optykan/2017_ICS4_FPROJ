@@ -2,7 +2,7 @@ import java.awt.*;
 import java.util.Vector;
 
 public class DraggablePile extends Pile implements Draggable{
-	private boolean isDragging = false;
+	protected boolean isDragging = false;
 
 	public DraggablePile(Pile pile){
 		super(pile);
@@ -11,6 +11,11 @@ public class DraggablePile extends Pile implements Draggable{
 	public DraggablePile(Vector vector){
 		super(vector);
 	}
+
+	public boolean isDragging(){
+		return isDragging;
+	}
+
 	public boolean contentsAreValid(){
 		final char[] CONTIGUOUS = {'A','2','3','4','5','6','7','8','9','T','J','Q','K'};
 		int i = getSize();
@@ -51,5 +56,11 @@ public class DraggablePile extends Pile implements Draggable{
 	}
 	public void updatePosition(int x, int y){
 		setCentre(x, y);
+		int size = getSize();
+		for(int i=0; i<size; i++){
+			Card c = get(i);
+			c.setCentre(x, y+(c.getFontHeight()+2*FONT_BUFFER_HEIGHT)*i);
+			set(i, c);
+		}
 	}
 }

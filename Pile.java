@@ -4,8 +4,7 @@ import java.util.Collections;
 
 //0 is the bottom of the vector (very last card)
 //cards are added starting from the top
-public class Pile extends Deck{
-	private static final int FONT_BUFFER_HEIGHT = 10;
+public class Pile extends Deck implements Cloneable{
 	public Pile(){
 		super();
 	}
@@ -111,14 +110,17 @@ public class Pile extends Deck{
 
 		//if we're out of x bounds then
 		if(x <= centre.getX()-c.getWidth()/2 || x >= centre.getX()+c.getWidth()/2){
+			System.out.println("out of bounds you fool");
 			return null;
 		}
 
 		//at the time that I'm writing this I have a good idea of what this code is doing (May 2017, 2017)
+		//...and now only God knows (May 29, 2017)
 		for(int i=0; i<length; i++){
 			c = get(i);
 			//if we are on the last card
 			if(i == length-1){
+				System.out.println("checking last card");
 				int topY = (int)centre.getY() + (length-1)*(2*FONT_BUFFER_HEIGHT+c.getFontHeight())-c.getHeight()/2;
 				if(y >= topY && y<=topY+c.getHeight()){
 					Pile p = new Pile();
@@ -128,17 +130,23 @@ public class Pile extends Deck{
 					return null;
 				}
 			}else{
-				int topY = (int)centre.getY()+(length-1)*(2*FONT_BUFFER_HEIGHT+c.getFontHeight())-c.getHeight()/2;
+				int topY = (int)centre.getY()+i*(2*FONT_BUFFER_HEIGHT+c.getFontHeight())-c.getHeight()/2;
 				int bottomY = topY + 2*FONT_BUFFER_HEIGHT+c.getFontHeight();
+				//if we determine that we're resolving some other card inside the deck
 				if(y >= topY && y <= bottomY){
 					Pile res = new Pile();
+					Point centre = getCentre();
+					res.setCentre((int)centre.getX(), (int)centre.getY()+i*(2*FONT_BUFFER_HEIGHT+c.getFontHeight()));
 					for(int j=i; j<length; j++){
+						//this pushes a reference
 						res.push(get(j));
 					}
 					DraggablePile drag = new DraggablePile(res);
 					if(!drag.contentsAreValid()){
+						System.out.println("invlaid");
 						return null;
 					}else{
+						System.out.println("something appened");
 						for(int j=i; j<length; j++){
 							Card trash = removeCardAt(j);
 						}

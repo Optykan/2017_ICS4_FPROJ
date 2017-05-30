@@ -83,9 +83,6 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 
 	//invoked when the mouse is released on a component
 	public void mouseReleased(MouseEvent e){
-		for(int i=0; i<piles.length; i++){
-			piles[i].dumpContents();
-		}
 		if(selectedPile != null){
 			repaint();
 			selectedPile.stopDrag();
@@ -94,6 +91,15 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 
 			selectedPile = null;	
 			origin = -1;
+		}
+		for(int i=0; i<piles.length; i++){
+			Card c = piles[i].pop();
+			if(c != null){
+				if(!c.isFaceUp()){
+					c.setFaceUp(true);
+				}	
+				piles[i].push(c);
+			}
 		}
 	}
 
@@ -127,6 +133,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 		if(selectedPile != null){
 			selectedPile.draw(g);
 		}
+		distribute.draw(g);
 	}
 
 	public DraggablePile resolveDraggablePile(int index, int x, int y){

@@ -83,6 +83,9 @@ public class Deck extends Shape{
 	}
 
 	public Card pop(){
+		if(deck.size()==0){
+			return null;
+		}
 		return (Card)deck.remove(deck.size()-1);
 	}
 

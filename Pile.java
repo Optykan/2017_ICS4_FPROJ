@@ -144,6 +144,7 @@ public class Pile extends Deck{
 						res.push(removeCardAt(i));
 					}
 					DraggablePile drag = new DraggablePile(res);
+					drag.setCentre((int)centre.getX(), (int)centre.getY()-c.getHeight()/2-i*(2*FONT_BUFFER_HEIGHT+c.getFontHeight()));
 					if(!drag.contentsAreValid()){
 						//add the references back to the original stack
 						addAll(res);

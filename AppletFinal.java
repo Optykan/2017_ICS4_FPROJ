@@ -44,6 +44,18 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 			c.setFaceUp(true);
 			piles[i].push(c);
 		}
+		new Thread(){
+			public void run(){
+				while(true){
+					repaint();
+					try{
+						Thread.sleep(100);
+					}catch(Exception e){
+
+					}
+				}
+			}
+		}.start();
 	}
 
 	public void start(){
@@ -84,7 +96,6 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 	//invoked when the mouse is released on a component
 	public void mouseReleased(MouseEvent e){
 		if(selectedPile != null){
-			repaint();
 			selectedPile.stopDrag();
 
 			returnDraggableToPile(e.getX(), e.getY());
@@ -106,9 +117,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 	//MouseMotionListener
 	public void mouseDragged(MouseEvent e){
 		if(selectedPile instanceof DraggablePile){
-			// drawStack.push(selectedPile);
 			selectedPile.updatePosition(e.getX(), e.getY());
-			repaint();
 		}
 	}
 	//MouseMotionListener
@@ -126,15 +135,19 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 		return true;
 	}
 
-	public void paint (Graphics g){
+	public void paint(Graphics g){
 		for(int i=0; i<piles.length; i++){
 			piles[i].draw(g);
 		}
 		if(selectedPile != null){
 			selectedPile.draw(g);
-		}
+		}	
 		distribute.draw(g);
 	}
+
+	// public void paint (Graphics g){
+	// 	update(g);
+	// }
 
 	public DraggablePile resolveDraggablePile(int index, int x, int y){
 		if(index >= 0  && index < piles.length){

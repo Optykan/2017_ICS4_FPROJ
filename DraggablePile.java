@@ -17,7 +17,6 @@ public class DraggablePile extends Pile implements Draggable{
 	}
 
 	public boolean contentsAreValid(){
-		/*
 		final char[] CONTIGUOUS = {'A','2','3','4','5','6','7','8','9','T','J','Q','K'};
 		int continuity = -1;
 
@@ -54,7 +53,7 @@ public class DraggablePile extends Pile implements Draggable{
 				// System.out.println("Something went wrong, exiting");
 				return false;
 			}
-		}*/
+		}
 		return true;
 	}
 

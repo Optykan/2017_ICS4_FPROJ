@@ -51,7 +51,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 				while(true){
 					repaint();
 					try{
-						Thread.sleep(1000);
+						Thread.sleep(10);
 					}catch(Exception e){
 
 					}

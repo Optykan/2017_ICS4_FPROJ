@@ -1,3 +1,4 @@
-ready_files.ini
 *.doc
 *.docx
+*.class
+*.ini

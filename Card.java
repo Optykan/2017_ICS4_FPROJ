@@ -9,6 +9,7 @@ public class Card extends Shape {
 	public Card() { 
 		super();
 		setSize(size);
+		setSuit(SuitType.DIAMOND);
 	}
 
 	public Card(char paramChar, SuitType paramSuitType) {
@@ -33,6 +34,11 @@ public class Card extends Shape {
 
 	public void setSuit(SuitType paramSuitType) {
 		suit = paramSuitType;
+		if(paramSuitType.equals(SuitType.DIAMOND) || paramSuitType.equals(SuitType.HEART)){
+			setColor(Color.RED);
+		}else{
+			setColor(Color.BLACK);
+		}
 	}
 
 	public SuitType getSuit() {
@@ -97,8 +103,16 @@ public class Card extends Shape {
 
 			localObject.draw(g);
 
+			localObject.setCentre((int)localPoint.getX()+getWidth()/2-15, (int)localPoint.getY()-getHeight()/2+15);
+			localObject.setHeight((int)(getFontHeight()/1.5));
+			localObject.draw(g);
+
+			localObject.setCentre((int)localPoint.getX()-getWidth()/2+15, (int)localPoint.getY()+getHeight()/2-15);
+			localObject.draw(g);
+
 			g.setFont(localFont);
 			g.drawString(Character.toString(getFaceValue()), (int)(localPoint.getX() - getWidth() / 2)+5, (int)(localPoint.getY() - getHeight() / 2 + 0.2D*getHeight()));
+			g.drawString(Character.toString(getFaceValue()), (int)(localPoint.getX() + getWidth() / 2)-15, (int)(localPoint.getY() + getHeight() / 2 - 0.1D*getHeight()));
 		}
 	}
 

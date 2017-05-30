@@ -1,6 +1,7 @@
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Stack;
 
 public class AppletFinal extends Applet implements ActionListener, MouseListener, MouseMotionListener{
 	Graphics g;   // declares a graphics canvas for drawing
@@ -8,6 +9,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 	int origin = -1;
 	Pile[] piles = new Pile[10];
 	Deck distribute = new Deck();
+	Stack drawStack = new Stack();
 
 	public void p(Object m){
 		System.out.println(m);
@@ -25,6 +27,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 		distribute.loadStandardDeck();
 		distribute.loadStandardDeck();
 		distribute.shuffle();
+		// drawStack.push(distribute);
 
 		for(int i=0; i<4; i++){
 			for(int j=0; j<6; j++){
@@ -74,8 +77,8 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 			pile.dumpContents();
 			selectedPile = pile;
 			selectedPile.startDrag();
+			// drawStack.push(selectedPile);
 		}
-		repaint();
 	}
 
 	//invoked when the mouse is released on a component
@@ -84,6 +87,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 			piles[i].dumpContents();
 		}
 		if(selectedPile != null){
+			repaint();
 			selectedPile.stopDrag();
 
 			returnDraggableToPile(e.getX(), e.getY());
@@ -91,12 +95,12 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 			selectedPile = null;	
 			origin = -1;
 		}
-		repaint();
 	}
 
 	//MouseMotionListener
 	public void mouseDragged(MouseEvent e){
-		if(selectedPile instanceof DraggablePile && selectedPile.isDragging()){
+		if(selectedPile instanceof DraggablePile){
+			// drawStack.push(selectedPile);
 			selectedPile.updatePosition(e.getX(), e.getY());
 			repaint();
 		}
@@ -117,15 +121,12 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 	}
 
 	public void paint (Graphics g){
-		// g.drawString ("Hello World", 25, 50);
-		// System.out.println("draw");
-		for(int i=0; i<10; i++){
+		for(int i=0; i<piles.length; i++){
 			piles[i].draw(g);
 		}
 		if(selectedPile != null){
 			selectedPile.draw(g);
 		}
-		distribute.draw(g);
 	}
 
 	public DraggablePile resolveDraggablePile(int index, int x, int y){

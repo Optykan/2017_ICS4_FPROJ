@@ -92,9 +92,11 @@ public class Pile extends Deck{
 	}
 
 	public void draw(Graphics g){
+		Card test = new Card();
 		if(deck.isEmpty()){
 			Point p = getCentre();
-			g.fill3DRect((int)p.x, (int)p.y, getWidth(), getHeight(), true);
+			g.setColor(Color.BLACK);
+			g.fillRect((int)p.x-test.getWidth()/2, (int)p.y-test.getHeight()/2, test.getWidth(), test.getHeight());
 		}else{
 			int s=getSize();
 			for(int i=0; i<s; i++){
@@ -136,7 +138,7 @@ public class Pile extends Deck{
 				//if we determine that we're resolving some other card inside the deck
 				if(y >= topY && y <= bottomY){
 					Pile res = new Pile();
-					res.setCentre((int)centre.getX(), (int)centre.getY()+i*(2*FONT_BUFFER_HEIGHT+c.getFontHeight()));
+					res.setCentre((int)centre.getX(), (int)centre.getY()-c.getHeight()/2-i*(2*FONT_BUFFER_HEIGHT+c.getFontHeight()));
 					for(int j=i; j<length; j++){
 						//we use i here because if we remove a j, then the entire vector shifts by 1, resulting in an ArrayIndexOutOfBoundsException
 						res.push(removeCardAt(i));

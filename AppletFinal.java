@@ -1,15 +1,17 @@
 import java.applet.*;
 import java.awt.*;
+import java.awt.image.ImageObserver;
 import java.awt.event.*;
 import java.util.Stack;
 
-public class AppletFinal extends Applet implements ActionListener, MouseListener, MouseMotionListener{
+public class AppletFinal extends Applet implements ActionListener, MouseListener, MouseMotionListener, ImageObserver{
 	Graphics g;   // declares a graphics canvas for drawing
 	DraggablePile selectedPile;
 	int origin = -1;
 	Pile[] piles = new Pile[10];
 	Deck distribute = new Deck();
-	Stack drawStack = new Stack();
+	Image buffer = null;
+	boolean dragRequiresRepaint = false;
 
 	public void p(Object m){
 		System.out.println(m);
@@ -49,7 +51,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 				while(true){
 					repaint();
 					try{
-						Thread.sleep(100);
+						Thread.sleep(1000);
 					}catch(Exception e){
 
 					}
@@ -135,19 +137,34 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 		return true;
 	}
 
+	public void update(Graphics g){
+		Graphics offgc;
+		Image offscreen = null;
+		Dimension d = size();
+
+		offscreen = createImage(d.width, d.height);
+		offgc = offscreen.getGraphics();
+		offgc.setColor(getBackground());
+		offgc.fillRect(0, 0, d.width, d.height);
+		offgc.setColor(getForeground());
+		paint(offgc);
+		g.drawImage(offscreen, 0, 0, this);
+	}
+
+
 	public void paint(Graphics g){
 		for(int i=0; i<piles.length; i++){
 			piles[i].draw(g);
 		}
+		distribute.draw(g);
 		if(selectedPile != null){
 			selectedPile.draw(g);
-		}	
-		distribute.draw(g);
+		}
 	}
 
-	// public void paint (Graphics g){
-	// 	update(g);
-	// }
+	public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height){
+		return true;
+	}
 
 	public DraggablePile resolveDraggablePile(int index, int x, int y){
 		if(index >= 0  && index < piles.length){

@@ -10,8 +10,6 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 	int origin = -1;
 	Pile[] piles = new Pile[10];
 	Deck distribute = new Deck();
-	Image buffer = null;
-	boolean dragRequiresRepaint = false;
 
 	public void p(Object m){
 		System.out.println(m);
@@ -51,13 +49,22 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 				while(true){
 					repaint();
 					try{
-						Thread.sleep(10);
+						//16.67 ~= 17 ~= 60fps
+						Thread.sleep(17);
 					}catch(Exception e){
 
 					}
 				}
 			}
 		}.start();
+
+		final char[] values = {'K','Q','J','T','9','8','7','6','5','4','3','2'};
+		for(int i=0; i<12; i++){
+			Card c = new Card(values[i], SuitType.DIAMOND);
+			c.setFaceUp(true);
+			piles[0].push(c);
+		}
+		distribute.push(new Card('A', SuitType.DIAMOND));
 	}
 
 	public void start(){
@@ -82,21 +89,25 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 
 	//invoked when a mouse button is pressed on a component
 	public void mousePressed(MouseEvent e){
-		int index = resolvePile(e.getX(), e.getY());
-		System.out.println("Target: "+index);
-		DraggablePile pile = resolveDraggablePile(index, e.getX(), e.getY());
-		if (pile != null){
-			System.out.println("Resolved pile");
-			origin = index;
-			pile.dumpContents();
-			selectedPile = pile;
-			selectedPile.startDrag();
-			// drawStack.push(selectedPile);
+		if(distribute.containsPoint(e.getX(), e.getY())){
+			distributeCards();
+		}else{	
+			int index = resolvePile(e.getX(), e.getY());
+			System.out.println("Target: "+index);
+			DraggablePile pile = resolveDraggablePile(index, e.getX(), e.getY());
+			if (pile != null){
+				System.out.println("Resolved pile");
+				origin = index;
+				pile.dumpContents();
+				selectedPile = pile;
+				selectedPile.startDrag();
+			}
 		}
 	}
 
 	//invoked when the mouse is released on a component
 	public void mouseReleased(MouseEvent e){
+		checkForRuns();
 		if(selectedPile != null){
 			selectedPile.stopDrag();
 
@@ -162,6 +173,37 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 		}
 	}
 
+	public void checkForRuns(){
+		for(int i=0; i<10; i++){
+			if(piles[i].hasRuns()){
+				System.out.println("Attempting to retrieve runs");
+				Deck p = piles[i].getRun();
+				p.dumpContents();
+				p = null;
+				break;
+			}
+		}
+	}
+
+	public void distributeCards(){
+		boolean canDeal = true;
+		for(int i=0; i<10; i++){
+			if(piles[i].isEmpty()){
+				canDeal = false;
+				break;
+			}
+		}
+		if(canDeal){
+			for(int i=0; i<10; i++){
+				if(!distribute.isEmpty()){
+					Card c = distribute.pop();
+					c.setFaceUp(true);
+					piles[i].push(c);
+				}
+			}	
+		}
+	}
+
 	public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height){
 		return true;
 	}
@@ -193,8 +235,10 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 		boolean returned = false;
 		for(int i=0; i<piles.length; i++){
 			if(piles[i].containsPoint(x, y)){
-				piles[i].addAll(selectedPile.getVector());
-				returned = true;
+				if(piles[i].isValidReturn(selectedPile)){
+					piles[i].addAll(selectedPile.getVector());
+					returned = true;
+				}
 				break;
 			}
 		}

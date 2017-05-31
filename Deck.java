@@ -6,7 +6,7 @@ import java.util.Collections;
 //cards are added starting from the top
 public class Deck extends Shape{
 	protected static final int FONT_BUFFER_HEIGHT = 10;
-	Vector deck = new Vector();
+	protected Vector deck = new Vector();
 
 	public Deck(){
 		super();
@@ -36,8 +36,8 @@ public class Deck extends Shape{
 		}
 	}
 
-	public void addAll(Pile pile){
-		addAll(pile.getVector());
+	public void addAll(Deck deck){
+		addAll(deck.getVector());
 	}
 
 	public void set(int i, Card c){
@@ -90,14 +90,13 @@ public class Deck extends Shape{
 	}
 
 	public void draw(Graphics g){
+		Card test = new Card();
 		if(deck.isEmpty()){
 			Point p = getCentre();
-			g.fill3DRect((int)p.x, (int)p.y, getWidth(), getHeight(), true);
+			g.setColor(Color.WHITE);
+			g.fillRect((int)p.x-test.getWidth()/2, (int)p.y-test.getHeight()/2, test.getWidth(), test.getHeight());
 		}else{
-			int s=getSize();
-			for(int i=0; i<s; i++){
-				get(i).draw(g);
-			}
+			get(0).draw(g);
 		}
 	}
 
@@ -113,7 +112,7 @@ public class Deck extends Shape{
 		int cy = (int)p.getY();
 		Card test = new Card();
 
-		return x>=cx-test.getWidth()/2 && x>=cx+test.getWidth()/2 && y>=cy-test.getHeight()/2 && y<=cy+test.getHeight()/2;
+		return x>=cx-test.getWidth()/2 && x<=cx+test.getWidth()/2 && y>=cy-test.getHeight()/2 && y<=cy+test.getHeight()/2;
 	}
 
 	public Card removeCardAt(int position){

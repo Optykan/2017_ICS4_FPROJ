@@ -1,6 +1,7 @@
 import java.util.Vector;
 import java.awt.*;
 import java.util.Collections;
+import java.util.Arrays;
 
 //0 is the bottom of the vector (very last card)
 //cards are added starting from the top
@@ -18,7 +19,7 @@ public class Pile extends Deck{
 
 	public boolean hasRuns(){
 		final char[] compare = {'K','Q','J','T','9','8','7','6','5','4','3','2','A'};
-		Object[] cards = deck.toArray();
+		Object[] cards = getVector().toArray();
 		int compareIndex = 0;
 		for(int i=0; i<cards.length; i++){
 			//make sure we dont check the cards that are facedown
@@ -43,42 +44,50 @@ public class Pile extends Deck{
 
 		return false;
 	}
-	public Pile getRun(){
+	public Deck getRun(){
 		final char[] compare = {'K','Q','J','T','9','8','7','6','5','4','3','2','A'};
-		Object[] cards = deck.toArray();
+		Object[] cards = getVector().toArray();
 		int compareIndex = 0;
-
-		Pile res = new Pile();
+		int startIndex = -1;
+		SuitType suit = null;
 
 		for(int i=0; i<cards.length; i++){
-			//make sure we dont check the cards that are facedown
-			if(!((Card)cards[i]).isFaceUp())
-				continue;
+			Card c = (Card)cards[i];
+			if(c.isFaceUp()){
+				suit = c.getSuit();
+				startIndex = i+1;
+				break;
+			}
+		}
 
-			//if we found a run
+		Deck res = new Deck();
+
+		if(cards.length-startIndex < 13){
+			return null;
+		}
+
+		for(int i=startIndex; i<cards.length; i++){
+			Card c = (Card)cards[i];
+
 			if(compareIndex == 13)
 				return res;
 
-			if(((Card)cards[i]).getFaceValue() == compare[compareIndex]){
-				//if the face value of this card is equal to the comapre index 
+			System.out.println(c.getSuit()+" "+suit);
+			if(c.getFaceValue() == compare[compareIndex] && c.getSuit().equals(suit)){
+				//if the face value of this card is equal to the compare index 
 				compareIndex++;
-				res.push((Card)deck.elementAt(i));
+				res.push(removeCardAt(startIndex));
 			}else{
 				//compare failed, delete everything
-				res = new Pile();
+				addAll(res);
+				res = new Deck();
 				compareIndex = 0;
 			}
 		}
 
 		//we have to check this again on the outside in case the run ends on the last card
-		if(compareIndex == 13){
-			int i = cards.length;
-			//since the run must always be at the end of the deck, we can go from the top card to the 13th card
-			while(i-->cards.length-13){
-				deck.removeElementAt(i);
-			}
+		if(compareIndex == 13)
 			return res;
-		}
 
 		return null;
 	}
@@ -103,6 +112,28 @@ public class Pile extends Deck{
 				get(i).draw(g);
 			}
 		}
+	}
+
+	public boolean isValidReturn(DraggablePile p){
+		int size = p.getSize();
+		Card destination = peek();
+		Card incoming = p.get(0);
+		final char[] compare = {'K','Q','J','T','9','8','7','6','5','4','3','2','A'};
+		int index = -1;
+		for(int i=0; i<compare.length; i++){
+			if(compare[i] == destination.getFaceValue()){
+				index = i;
+				break;
+			}
+		}
+		if(index == -1){
+			return false;
+		}
+		//make sure that the incoming card is valid to place
+		if(index == 12){
+			return false;
+		}
+		return compare[index+1] == incoming.getFaceValue();
 	}
 
 	public DraggablePile resolveDraggablePile(int x, int y){

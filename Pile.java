@@ -17,48 +17,48 @@ public class Pile extends Deck{
 		super(vector);
 	}
 
-	public boolean hasRuns(){
+	public int getRunIndex(){
 		final char[] compare = {'K','Q','J','T','9','8','7','6','5','4','3','2','A'};
 		Object[] cards = getVector().toArray();
 		int compareIndex = 0;
+		int runStartsAt = -1;
+
 		for(int i=0; i<cards.length; i++){
 			//make sure we dont check the cards that are facedown
-			if(!((Card)cards[i]).isFaceUp())
+			Card current = (Card)cards[i];
+			if(!current.isFaceUp())
 				continue;
 
 			//if we found a run
 			if(compareIndex == 13)
-				return true;
+				return runStartsAt;
 
-			if(((Card)cards[i]).getFaceValue() == compare[compareIndex]){
-				//if the face value of this card is equal to the comapre index 
+			if(current.getFaceValue() == compare[compareIndex]){
+				//if the face value of this card is equal to the comapre index
+				if(runStartsAt == -1)
+					runStartsAt = i;
+
 				compareIndex++;
 			}else{
+				runStartsAt = -1;
 				compareIndex = 0;
 			}
 		}
 
 		//we have to check this again on the outside in case the run ends on the last card
 		if(compareIndex == 13)
-			return true;
+			return runStartsAt;
 
-		return false;
+		return -1;
 	}
-	public Deck getRun(){
+	public Deck getRun(int startIndex){
 		final char[] compare = {'K','Q','J','T','9','8','7','6','5','4','3','2','A'};
 		Object[] cards = getVector().toArray();
 		int compareIndex = 0;
-		int startIndex = -1;
 		SuitType suit = null;
 
-		for(int i=0; i<cards.length; i++){
-			Card c = (Card)cards[i];
-			if(c.isFaceUp()){
-				suit = c.getSuit();
-				startIndex = i+1;
-				break;
-			}
-		}
+		Card destination = (Card)cards[startIndex];
+		suit = destination.getSuit();
 
 		Deck res = new Deck();
 
@@ -116,7 +116,14 @@ public class Pile extends Deck{
 
 	public boolean isValidReturn(DraggablePile p){
 		int size = p.getSize();
-		Card destination = peek();
+		Card destination;
+
+		try{
+			destination = peek();
+		}catch(java.util.NoSuchElementException e){
+			return true;
+		}
+
 		Card incoming = p.get(0);
 		final char[] compare = {'K','Q','J','T','9','8','7','6','5','4','3','2','A'};
 		int index = -1;

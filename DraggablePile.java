@@ -43,7 +43,9 @@ public class DraggablePile extends Pile implements Draggable{
 			Card c = get(i);
 			// System.out.println("Checking: "+c.getFaceValue()+" with suit: "+c.getSuit());
 
-			if(!c.isFaceUp()){
+			if(continuity == -1 && i != size-1){
+				return false;
+			}else if(!c.isFaceUp()){
 				// System.out.println("Face down card, exiting");
 				return false;
 			}else if(c.getFaceValue()==CONTIGUOUS[continuity] && c.getSuit().equals(suit)){

@@ -58,13 +58,13 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 			}
 		}.start();
 
-		final char[] values = {'K','Q','J','T','9','8','7','6','5','4','3','2'};
-		for(int i=0; i<12; i++){
-			Card c = new Card(values[i], SuitType.DIAMOND);
-			c.setFaceUp(true);
-			piles[0].push(c);
-		}
-		distribute.push(new Card('A', SuitType.DIAMOND));
+		// final char[] values = {'K','Q','J','T','9','8','7','6','5','4','3','2'};
+		// for(int i=0; i<12; i++){
+		// 	Card c = new Card(values[i], SuitType.DIAMOND);
+		// 	c.setFaceUp(true);
+		// 	piles[0].push(c);
+		// }
+		// distribute.push(new Card('A', SuitType.DIAMOND));
 	}
 
 	public void start(){
@@ -98,6 +98,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 			if (pile != null){
 				System.out.println("Resolved pile");
 				origin = index;
+				pile.updatePosition(e.getX(), e.getY());
 				pile.dumpContents();
 				selectedPile = pile;
 				selectedPile.startDrag();
@@ -129,7 +130,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 
 	//MouseMotionListener
 	public void mouseDragged(MouseEvent e){
-		if(selectedPile instanceof DraggablePile){
+		if(selectedPile instanceof Draggable){
 			selectedPile.updatePosition(e.getX(), e.getY());
 		}
 	}
@@ -175,9 +176,10 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 
 	public void checkForRuns(){
 		for(int i=0; i<10; i++){
-			if(piles[i].hasRuns()){
+			int index = piles[i].getRunIndex();
+			if(index >= 0){
 				System.out.println("Attempting to retrieve runs");
-				Deck p = piles[i].getRun();
+				Deck p = piles[i].getRun(index);
 				p.dumpContents();
 				p = null;
 				break;
@@ -195,11 +197,9 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 		}
 		if(canDeal){
 			for(int i=0; i<10; i++){
-				if(!distribute.isEmpty()){
-					Card c = distribute.pop();
-					c.setFaceUp(true);
-					piles[i].push(c);
-				}
+				Card c = distribute.pop();
+				c.setFaceUp(true);
+				piles[i].push(c);
 			}	
 		}
 	}

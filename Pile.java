@@ -45,9 +45,14 @@ public class Pile extends Deck{
 			}
 		}
 
+
 		//we have to check this again on the outside in case the run ends on the last card
-		if(compareIndex == 13)
+		System.out.println("Run starts at: "+runStartsAt+" while compareIndex: "+compareIndex);
+		if(compareIndex == 13){
 			return runStartsAt;
+		}else{
+			System.out.println("No run found");
+		}
 
 		return -1;
 	}
@@ -63,6 +68,7 @@ public class Pile extends Deck{
 		Deck res = new Deck();
 
 		if(cards.length-startIndex < 13){
+			System.out.println("Size of run was less than 13");
 			return null;
 		}
 

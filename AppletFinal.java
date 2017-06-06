@@ -10,6 +10,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 	int origin = -1;
 	Pile[] piles = new Pile[10];
 	Deck distribute = new Deck();
+	boolean isLoading = false;
 
 	public void p(Object m){
 		System.out.println(m);
@@ -19,31 +20,9 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 		g = getGraphics ();
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		for(int i=0; i<piles.length; i++){
-			piles[i] = new Pile();
-			piles[i].setCentre((CardSizeType.LARGE.getWidth()+20)*i+50, 100);
-		}
-		distribute.setCentre(1000,500);
-		distribute.loadStandardDeck();
-		distribute.loadStandardDeck();
-		distribute.shuffle();
-		// drawStack.push(distribute);
+		loadDeck(1);
 
-		for(int i=0; i<4; i++){
-			for(int j=0; j<6; j++){
-				piles[i].push(distribute.pop());
-			}
-		}
-		for(int i=4;i<10;i++){
-			for(int j=0; j<5; j++){
-				piles[i].push(distribute.pop());
-			}
-		}
-		for(int i=0; i<10; i++){
-			Card c = piles[i].pop();
-			c.setFaceUp(true);
-			piles[i].push(c);
-		}
+		//paint thread
 		new Thread(){
 			public void run(){
 				while(true){
@@ -58,6 +37,28 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 			}
 		}.start();
 
+		MenuBar menubar = new MenuBar();
+		Menu menu = new Menu("Game");
+		Menu newGameDifficultyDropdown = new Menu("New Game");
+		MenuItem newGameEasy = new MenuItem("Easy (1 Suit)");
+		MenuItem newGameMedium = new MenuItem("Medium (2 Suits)");
+		MenuItem newGameHard = new MenuItem("Hard (4 Suits)");
+		newGameDifficultyDropdown.add(newGameEasy);
+		newGameDifficultyDropdown.add(newGameMedium);
+		newGameDifficultyDropdown.add(newGameHard);
+		menu.add(newGameDifficultyDropdown);
+		menubar.add(menu);
+
+		Component c = this;
+		while (c != null && !(c instanceof Frame)) {
+			c = c.getParent();
+		}
+		((Frame)c).setMenuBar(menubar);
+		setLayout(new BorderLayout());
+		newGameEasy.addActionListener(this);
+		newGameMedium.addActionListener(this);
+		newGameHard.addActionListener(this);
+
 		// final char[] values = {'K','Q','J','T','9','8','7','6','5','4','3','2'};
 		// for(int i=0; i<12; i++){
 		// 	Card c = new Card(values[i], SuitType.DIAMOND);
@@ -67,8 +68,67 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 		// distribute.push(new Card('A', SuitType.DIAMOND));
 	}
 
+	public void loadDeck(int suits){
+		if(suits < 1 && suits > 4 && suits != 3){
+			throw new IllegalArgumentException("Suits must be of count 1, 2, or 4");
+		}
+		distribute = new Deck();
+		distribute.setCentre(1000,500);
+		distribute.loadStandardDeck(suits);
+		distribute.loadStandardDeck(suits);
+		distribute.shuffle();
+	}
+
 	public void start(){
-		System.out.println("start");
+		isLoading = true;
+		for(int i=0; i<piles.length; i++){
+			piles[i] = new Pile();
+			piles[i].setCentre((CardSizeType.LARGE.getWidth()+20)*i+50, 100);
+		}
+		new Thread(){
+			public void run(){
+				int delay = 75;
+				for(int i=0; i<4; i++){
+					for(int j=0; j<6; j++){
+						piles[i].push(distribute.pop());
+						try{
+							Thread.sleep(delay--);						
+						}catch(Exception e){
+
+						}
+					}
+				}
+				for(int i=4;i<10;i++){
+					for(int j=0; j<5; j++){
+						piles[i].push(distribute.pop());
+						try{
+							Thread.sleep(delay--);						
+						}catch(Exception e){
+							
+						}
+					}
+				}
+				for(int i=0; i<10; i++){
+					Card c = piles[i].pop();
+					c.setFaceUp(true);
+					piles[i].push(c);
+					try{
+						Thread.sleep(delay--);						
+					}catch(Exception e){
+
+					}
+				}
+				isLoading = false;
+			}
+		}.start();
+	}
+
+	public void reset(){
+		piles = null;
+		piles = new Pile[10];
+		selectedPile = null;
+		origin = -1;
+		start();
 	}
 
 	//when the mouse clicks (press and release) a component
@@ -89,43 +149,47 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 
 	//invoked when a mouse button is pressed on a component
 	public void mousePressed(MouseEvent e){
-		if(distribute.containsPoint(e.getX(), e.getY())){
-			distributeCards();
-		}else{	
-			int index = resolvePile(e.getX(), e.getY());
-			System.out.println("Target: "+index);
-			DraggablePile pile = resolveDraggablePile(index, e.getX(), e.getY());
-			if (pile != null){
-				System.out.println("Resolved pile");
-				origin = index;
-				pile.updatePosition(e.getX(), e.getY());
-				pile.dumpContents();
-				selectedPile = pile;
-				selectedPile.startDrag();
+		if(!isLoading){
+			if(distribute.containsPoint(e.getX(), e.getY())){
+				distributeCards();
+			}else{	
+				int index = resolvePile(e.getX(), e.getY());
+				System.out.println("Target: "+index);
+				DraggablePile pile = resolveDraggablePile(index, e.getX(), e.getY());
+				if (pile != null){
+					System.out.println("Resolved pile");
+					origin = index;
+					pile.updatePosition(e.getX(), e.getY());
+					pile.dumpContents();
+					selectedPile = pile;
+					selectedPile.startDrag();
+				}
 			}
 		}
 	}
 
 	//invoked when the mouse is released on a component
 	public void mouseReleased(MouseEvent e){
-		if(selectedPile != null){
-			selectedPile.stopDrag();
+		if(!isLoading){
+			if(selectedPile != null){
+				selectedPile.stopDrag();
 
-			returnDraggableToPile(e.getX(), e.getY());
+				returnDraggableToPile(e.getX(), e.getY());
 
-			selectedPile = null;	
-			origin = -1;
-		}
-		for(int i=0; i<piles.length; i++){
-			Card c = piles[i].pop();
-			if(c != null){
-				if(!c.isFaceUp()){
-					c.setFaceUp(true);
-				}	
-				piles[i].push(c);
+				selectedPile = null;	
+				origin = -1;
 			}
+			for(int i=0; i<piles.length; i++){
+				Card c = piles[i].pop();
+				if(c != null){
+					if(!c.isFaceUp()){
+						c.setFaceUp(true);
+					}	
+					piles[i].push(c);
+				}
+			}
+			checkForRuns();
 		}
-		checkForRuns();
 	}
 
 	//MouseMotionListener
@@ -141,7 +205,20 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 
 	//implemented from ActionListener
 	public void actionPerformed(ActionEvent e){
-		System.out.println("actionPerformed");
+		if (e.getSource() instanceof MenuItem) {
+			MenuItem item = (MenuItem) e.getSource();
+			System.out.println(item.getLabel());
+			if(item.getLabel().matches("Easy.*")){
+				loadDeck(1);
+				reset();
+			}else if(item.getLabel().matches("Medium.*")){
+				loadDeck(2);
+				reset();
+			}else{
+				loadDeck(4);
+				reset();
+			}
+		}
 	}
 
 	public boolean action(ActionEvent e){

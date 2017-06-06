@@ -52,14 +52,17 @@ public class Deck extends Shape{
 		return (Card)deck.lastElement();
 	}
 
-	public void loadStandardDeck(){
-		// final SuitType[] suits = {SuitType.DIAMOND, SuitType.CLUB, SuitType.HEART, SuitType.SPADE};
+	public void loadStandardDeck(int suitCount){
+		System.out.println("Loading :"+suitCount);
+		final SuitType[] suits = {SuitType.SPADE, SuitType.CLUB, SuitType.DIAMOND,  SuitType.HEART, };
 		final char[] values = {'K','Q','J','T','9','8','7','6','5','4','3','2','A'};
-		for(int i=0; i<4; i++){
-			for(int j=0; j<13; j++){
-				Card p = new Card(values[j], SuitType.DIAMOND);
-				p.setFaceUp(false);
-				push(p);
+		for(int h = 0; h<4/suitCount; h++){
+			for(int i=0; i<suitCount; i++){
+				for(int j=0; j<13; j++){
+					Card p = new Card(values[j], suits[i]);
+					p.setFaceUp(false);
+					push(p);
+				}
 			}
 		}
 	}

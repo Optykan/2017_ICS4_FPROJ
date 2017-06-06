@@ -1,4 +1,8 @@
 import java.awt.*;
+import javax.imageio.*;
+import java.awt.image.*;
+import java.io.IOException;
+import java.io.File;
 
 public class Card extends Shape { 
 	private boolean isFaceUp=false;

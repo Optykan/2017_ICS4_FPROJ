@@ -11,14 +11,16 @@ public class Deck extends Shape{
 	public Deck(){
 		super();
 	}
-	public Deck(Pile pile){
-		super();
-		deck.addAll(pile.getVector());
+	public Deck(Pile p){
+		this(p.getVector());
 	}
 
 	public Deck(Vector vector){
 		super();
-		deck.addAll(vector);
+		int size = vector.size();
+		for(int i=0; i<size; i++){
+			push((Card)vector.remove(0));
+		}
 	}
 
 	public void dumpContents(){

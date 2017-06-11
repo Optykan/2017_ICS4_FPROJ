@@ -9,12 +9,19 @@ public class Pile extends Deck{
 	public Pile(){
 		super();
 	}
-	public Pile(Pile pile){
-		super(pile);
+	public Pile(Pile p){
+		super();
+		int size = p.getSize();
+		for(int i=0; i<size; i++){
+			push((Card)p.removeCardAt(0));
+		}
 	}
 
 	public Pile(Vector vector){
-		super(vector);
+		int size = vector.size();
+		for(int i=0; i<size; i++){
+			push((Card)vector.remove(0));
+		}
 	}
 
 	public int getRunIndex(){

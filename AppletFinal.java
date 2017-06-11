@@ -152,7 +152,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 	public void mousePressed(MouseEvent e){
 		if(!isLoading){
 			System.out.println("Saving");
-			HistoryStateManager.save(piles, distribute);
+			// HistoryStateManager.save(piles, distribute);
 			if(distribute.containsPoint(e.getX(), e.getY())){
 				distributeCards();
 			}else{	
@@ -224,18 +224,19 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 		}
 	}
 
-	public void keyPressed( KeyEvent e ) {
+	public void keyPressed(KeyEvent e) {
 		int c = e.getKeyCode();
 		if(c == 90 && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)){
-			HistoryState state = HistoryStateManager.retrieve();
-			if(state != null){
-				System.out.println("undoing");
-				piles = state.getPiles();
-				for(int i=0; i<piles.length; i++){
-					piles[i].dumpContents();
-				}
-				distribute = state.getDistribute();
-			}	
+			// HistoryState state = HistoryStateManager.retrieve();
+			// if(state != null){
+			// 	System.out.println("undoing");
+			// 	piles = state.getPiles();
+			// 	for(int i=0; i<piles.length; i++){
+			// 		piles[i].dumpContents();
+			// 	}
+			// 	distribute = state.getDistribute();
+			// 	repaint();
+			// }	
 		}
 		e.consume();
 	}
@@ -244,6 +245,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 	}
 	public void keyTyped( KeyEvent e ) {
 	}
+
 
 	public void update(Graphics g){
 		Graphics offgc;

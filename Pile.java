@@ -75,6 +75,7 @@ public class Pile extends Deck{
 		Deck res = new Deck();
 
 		if(cards.length-startIndex < 13){
+			//if the size of the run is less than 13 then its impossible to have a run
 			System.out.println("Size of run was less than 13");
 			return null;
 		}
@@ -85,9 +86,9 @@ public class Pile extends Deck{
 			if(compareIndex == 13)
 				return res;
 
-			System.out.println(c.getSuit()+" "+suit);
+			// System.out.println(c.getSuit()+" "+suit);
 			if(c.getFaceValue() == compare[compareIndex] && c.getSuit().equals(suit)){
-				//if the face value of this card is equal to the compare index 
+				//if the face value of this card is equal to the what we're currently comparing
 				compareIndex++;
 				res.push(removeCardAt(startIndex));
 			}else{
@@ -109,6 +110,7 @@ public class Pile extends Deck{
 		Point p = getCentre();
 		int y = (int)p.getY();
 
+		//set the centre to the current number of cards multiplied by the font buffer and font height (space between the cards)
 		card.setCentre((int)p.getX(), y+(card.getFontHeight()+2*FONT_BUFFER_HEIGHT)*getSize());
 		deck.add(card);
 	}
@@ -134,6 +136,7 @@ public class Pile extends Deck{
 		try{
 			destination = peek();
 		}catch(java.util.NoSuchElementException e){
+			//if the deck is empty then accept anything
 			return true;
 		}
 
@@ -163,7 +166,7 @@ public class Pile extends Deck{
 
 		//if we're out of x bounds then
 		if(x <= centre.getX()-c.getWidth()/2 || x >= centre.getX()+c.getWidth()/2){
-			System.out.println("out of bounds you fool");
+			// System.out.println("out of bounds you fool");
 			return null;
 		}
 
@@ -173,7 +176,7 @@ public class Pile extends Deck{
 			c = get(i);
 			//if we are on the last card
 			if(i == length-1){
-				System.out.println("checking last card");
+				// System.out.println("checking last card");
 				int topY = (int)centre.getY() + (length-1)*(2*FONT_BUFFER_HEIGHT+c.getFontHeight())-c.getHeight()/2;
 				if(y >= topY && y<=topY+c.getHeight()){
 					Pile p = new Pile();
@@ -196,7 +199,9 @@ public class Pile extends Deck{
 						res.push(removeCardAt(i));
 					}
 					DraggablePile drag = new DraggablePile(res);
+					//set the centre of the pile to slightly lower than whehre the user clicked
 					drag.setCentre((int)centre.getX(), (int)centre.getY()-c.getHeight()/2-i*(2*FONT_BUFFER_HEIGHT+c.getFontHeight()));
+
 					if(!drag.contentsAreValid()){
 						//add the references back to the original stack
 						addAll(res);

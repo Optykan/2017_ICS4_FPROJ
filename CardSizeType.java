@@ -1,3 +1,5 @@
+//this is how we fake enums in java: static properties and a private constructor
+
 public class CardSizeType {
     public static final CardSizeType SMALL = new CardSizeType(60);
     public static final CardSizeType MEDIUM = new CardSizeType(80);

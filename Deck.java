@@ -55,9 +55,10 @@ public class Deck extends Shape{
 	}
 
 	public void loadStandardDeck(int suitCount){
-		System.out.println("Loading :"+suitCount);
+		// System.out.println("Loading :"+suitCount);
 		final SuitType[] suits = {SuitType.SPADE, SuitType.CLUB, SuitType.DIAMOND,  SuitType.HEART, };
 		final char[] values = {'K','Q','J','T','9','8','7','6','5','4','3','2','A'};
+		//load 4 suits divided by how many suits we want
 		for(int h = 0; h<4/suitCount; h++){
 			for(int i=0; i<suitCount; i++){
 				for(int j=0; j<13; j++){

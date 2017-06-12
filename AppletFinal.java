@@ -212,6 +212,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 
 	//implemented from ActionListener
 	public void actionPerformed(ActionEvent e){
+
 		if (e.getSource() instanceof MenuItem) {
 			MenuItem item = (MenuItem) e.getSource();
 			System.out.println(item.getLabel());
@@ -259,6 +260,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 		Image offscreen = null;
 		Dimension d = size();
 
+		//paint to an offscreen canvas so we dont get flicker
 		offscreen = createImage(d.width, d.height);
 		offgc = offscreen.getGraphics();
 		offgc.setColor(getBackground());

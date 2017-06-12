@@ -11,14 +11,16 @@ public class Deck extends Shape{
 	public Deck(){
 		super();
 	}
-	public Deck(Pile pile){
-		super();
-		deck.addAll(pile.getVector());
+	public Deck(Pile p){
+		this(p.getVector());
 	}
 
 	public Deck(Vector vector){
 		super();
-		deck.addAll(vector);
+		int size = vector.size();
+		for(int i=0; i<size; i++){
+			push((Card)vector.remove(0));
+		}
 	}
 
 	public void dumpContents(){
@@ -100,6 +102,7 @@ public class Deck extends Shape{
 		if(deck.isEmpty()){
 			Point p = getCentre();
 			g.setColor(Color.WHITE);
+			//just make it empty if theres no cards left
 			g.fillRect((int)p.x-test.getWidth()/2, (int)p.y-test.getHeight()/2, test.getWidth(), test.getHeight());
 		}else{
 			get(0).draw(g);

@@ -4,7 +4,10 @@ class HistoryState{
 	public HistoryState(Pile[] p, Deck d){
 		//clone so its not a reference
 		piles = new Pile[p.length];
-		System.arraycopy(p, 0, piles, 0, p.length);
+		for(int i=0; i<p.length; i++){
+			piles[i] = new Pile(p[i]);
+			piles[i].setCentre(p[i].getCentre());
+		}
 		distribute = new Deck(d.getVector());
 	}
 	public Pile[] getPiles(){

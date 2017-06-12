@@ -9,12 +9,19 @@ public class Pile extends Deck{
 	public Pile(){
 		super();
 	}
-	public Pile(Pile pile){
-		super(pile);
+	public Pile(Pile p){
+		super();
+		int size = p.getSize();
+		for(int i=0; i<size; i++){
+			push((Card)p.removeCardAt(0));
+		}
 	}
 
 	public Pile(Vector vector){
-		super(vector);
+		int size = vector.size();
+		for(int i=0; i<size; i++){
+			push((Card)vector.remove(0));
+		}
 	}
 
 	public int getRunIndex(){
@@ -160,7 +167,7 @@ public class Pile extends Deck{
 			return null;
 		}
 
-		//at the time that I'm writing this I have a good idea of what this code is doing (May 2017, 2017)
+		//at the time that I'm writing this I have a good idea of what this code is doing (May 27, 2017)
 		//...and now only God knows (May 29, 2017)
 		for(int i=0; i<length; i++){
 			c = get(i);
@@ -177,6 +184,7 @@ public class Pile extends Deck{
 					return null;
 				}
 			}else{
+				//do some math to find the htop of the card that we're checking
 				int topY = (int)centre.getY()+i*(2*FONT_BUFFER_HEIGHT+c.getFontHeight())-c.getHeight()/2;
 				int bottomY = topY + 2*FONT_BUFFER_HEIGHT+c.getFontHeight();
 				//if we determine that we're resolving some other card inside the deck

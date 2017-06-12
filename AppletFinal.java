@@ -11,6 +11,7 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 	Pile[] piles = new Pile[10];
 	Deck distribute = new Deck();
 	boolean isLoading = false;
+	int difficulty = 1;
 	char inputChar = ' ';
 
 	public void p(Object m){
@@ -192,6 +193,9 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 				}
 			}
 			checkForRuns();
+			if(isGameOver()){
+				loadDeck(difficulty);
+			}
 		}
 	}
 
@@ -212,12 +216,15 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 			MenuItem item = (MenuItem) e.getSource();
 			System.out.println(item.getLabel());
 			if(item.getLabel().matches("Easy.*")){
+				difficulty = 1;
 				loadDeck(1);
 				reset();
 			}else if(item.getLabel().matches("Medium.*")){
+				difficulty = 2;
 				loadDeck(2);
 				reset();
 			}else{
+				difficulty = 4;
 				loadDeck(4);
 				reset();
 			}
@@ -346,5 +353,16 @@ public class AppletFinal extends Applet implements ActionListener, MouseListener
 		if(!returned){
 			piles[origin].addAll(selectedPile.getVector());
 		}
+	}
+
+	public boolean isGameOver(){
+		boolean allEmpty = true;
+		for(int i=0; i<piles.length; i++){
+			if(!piles[i].isEmpty()){
+				allEmpty = false;
+				break;
+			}
+		}
+		return allEmpty;
 	}
 } 
